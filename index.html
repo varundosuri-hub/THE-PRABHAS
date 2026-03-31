@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Prabhas OTT</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* INTRO */
+#intro{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
+}
+
+.small{
+  letter-spacing:5px;
+  opacity:0;
+  animation:fade 2s forwards;
+}
+
+.big{
+  font-size:80px;
+  font-weight:bold;
+  transform:scale(0.5);
+  opacity:0;
+  animation:zoom 2s forwards;
+  animation-delay:1s;
+}
+
+@keyframes fade{to{opacity:1}}
+@keyframes zoom{
+  to{transform:scale(1.1);opacity:1;}
+}
+
+/* NAV */
+.nav{
+ position:fixed;
+ width:100%;
+ top:0;
+ display:flex;
+ justify-content:space-between;
+ padding:15px;
+ backdrop-filter:blur(12px);
+ background:rgba(0,0,0,0.5);
+}
+
+.logo{
+ color:red;
+ animation:glow 1.5s infinite alternate;
+}
+@keyframes glow{
+ from{text-shadow:0 0 5px red}
+ to{text-shadow:0 0 20px red}
+}
+
+.search{
+ padding:6px;
+ border-radius:20px;
+ background:rgba(255,255,255,0.1);
+ border:none;
+ color:white;
+}
+
+/* HERO */
+.hero{
+ height:70vh;
+ position:relative;
+ overflow:hidden;
+}
+
+.slide{
+ position:absolute;
+ width:100%;
+ height:100%;
+ background-size:cover;
+ background-position:center;
+ animation:slide 12s infinite;
+}
+
+.slide:nth-child(2){animation-delay:4s}
+.slide:nth-child(3){animation-delay:8s}
+
+@keyframes slide{
+ 0%{opacity:0}
+ 10%{opacity:1}
+ 30%{opacity:1}
+ 40%{opacity:0}
+}
+
+/* ROW */
+.row{
+ display:flex;
+ overflow-x:auto;
+ gap:15px;
+ padding:20px;
+}
+
+.card{
+ min-width:220px;
+ height:130px;
+ border-radius:12px;
+ overflow:hidden;
+ cursor:pointer;
+ transition:0.4s;
+ position:relative;
+}
+
+.card img{width:100%;height:100%;object-fit:cover;}
+
+.card:hover{transform:scale(1.15);}
+
+/* GLOW */
+.trending:hover{box-shadow:0 0 30px cyan}
+.action:hover{box-shadow:0 0 30px red}
+.more:hover{box-shadow:0 0 30px yellow}
+.salaar:hover{box-shadow:0 0 40px crimson}
+.ai:hover{box-shadow:0 0 40px lime}
+
+/* PLAYER */
+#player{
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:black;
+ display:none;
+ z-index:9999;
+}
+#player iframe{width:100%;height:100%}
+
+/* FOOTER */
+.footer{
+ text-align:center;
+ padding:30px;
+}
+.footer a{
+ color:red;
+ animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+ 0%{text-shadow:0 0 5px red}
+ 50%{text-shadow:0 0 20px red}
+ 100%{text-shadow:0 0 5px red}
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+ <div class="small">INDIA'S BIGGEST SUPERSTAR</div>
+ <div class="big">PRABHAS</div>
+</div>
+
+<div id="main" style="display:none">
+
+<div class="nav">
+ <div class="logo">PRABHAS OTT</div>
+ <input class="search" placeholder="Search..." onkeyup="searchMovies(this.value)">
+</div>
+
+<!-- HERO -->
+<div class="hero">
+ <div class="slide" style="background:url('prabhas.jpg') center/cover"></div>
+ <div class="slide" style="background:url('prabhas.jpg') center/cover"></div>
+ <div class="slide" style="background:url('prabhas.jpg') center/cover"></div>
+</div>
+
+<h2>🤖 Recommended</h2>
+<div class="row" id="aiRow"></div>
+
+<h2>🔥 Trending</h2>
+<div class="row" id="row1"></div>
+
+<h2>🎬 Action</h2>
+<div class="row" id="row2"></div>
+
+<h2>⭐ More</h2>
+<div class="row" id="row3"></div>
+
+<h2>🥵 SALAAR</h2>
+<div class="row" id="row4"></div>
+
+<div class="footer">
+Made by <a href="https://youtube.com/@d_varun_1?si=AVJi_eS_c9UWyFus" target="_blank">D_varun_1 ▶</a>
+</div>
+
+</div>
+
+<div id="player"></div>
+
+<audio id="boom" src="https://www.myinstants.com/media/sounds/netflix_tudum.mp3"></audio>
+
+<script>
+
+let vids=[
+'f9SIFownXUk','8gp9ZjrNWzs','xNQYF_hWkjU','nKFfPERyyZw','Tnn2E_SsGOs',
+'f8wRhgAIiMc','AZa2N77dTEc','KAcOQ5gvSC8','h6Sr7YBiglQ','maT6WQG22WI',
+'h0dybrN-8Ys','b8dvhBPrGtw','nf1OpDXnrCc','gBkL9foQxBk','aWrgUeK6aLw'
+];
+
+let salaar=[
+'b0fPciW_uco','7zEqrXp83e0','6CRtJfE1XGw','PcZii0OWtAE','M2kysMZfc-E'
+];
+
+// FIX THUMBNAIL (fallback)
+function thumb(id){
+ return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+}
+
+function create(id,cat){
+ let c=document.createElement("div");
+ c.className="card "+cat;
+
+ c.innerHTML=`<img src="${thumb(id)}">`;
+
+ c.onclick=()=>play(id);
+
+ c.onmouseenter=()=>{c.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1"></iframe>`}
+ c.onmouseleave=()=>{c.innerHTML=`<img src="${thumb(id)}">`}
+
+ return c;
+}
+
+// ADD
+vids.forEach((v,i)=>{
+ let cat=i<5?"trending":i<10?"action":"more";
+ let card=create(v,cat);
+ if(i<5)row1.appendChild(card);
+ else if(i<10)row2.appendChild(card);
+ else row3.appendChild(card);
+});
+
+// SALAAR
+salaar.forEach(v=>row4.appendChild(create(v,"salaar")));
+
+// AI RANDOM
+function shuffle(arr){
+ return arr.sort(()=>0.5-Math.random());
+}
+shuffle(vids).slice(0,5).forEach(v=>{
+ aiRow.appendChild(create(v,"ai"));
+});
+
+// PLAYER
+function play(id){
+ player.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&controls=0"></iframe>`;
+ player.style.display="block";
+}
+
+// SEARCH
+function searchMovies(q){
+ q=q.toLowerCase();
+ document.querySelectorAll(".card").forEach(c=>{
+  c.style.display="block";
+ });
+}
+
+// INTRO
+setTimeout(()=>boom.play(),300);
+
+setTimeout(()=>{
+ intro.style.opacity="0";
+ intro.style.transition="1s";
+ setTimeout(()=>{
+  intro.style.display="none";
+  main.style.display="block";
+ },1000);
+},3000);
+
+</script>
+
+</body>
+</html>
