@@ -68,7 +68,8 @@ z-index:9999;
 .small{
 letter-spacing:5px;
 opacity:0;
-animation:fade 2s forwards;
+animation:fade 2s forwards, turnRed 1s forwards;
+animation-delay:0s, 1.5s;
 }
 
 .big{
@@ -99,9 +100,9 @@ z-index:100;
 color:red;
 animation:glow 1.5s infinite alternate;
 }
-@keyframes glow{
-from{text-shadow:0 0 5px red}
-to{text-shadow:0 0 20px red}
+@keyframes turnRed{
+from{color:white;}
+to{color:red;}
 }
 
 .search{
@@ -220,7 +221,7 @@ animation:pulse 1.5s infinite;
 <!-- LOGIN -->
 <div id="login">
 <div class="login-box">
-<h2>Prabhas Fans Login</h2>
+<h2>PRABHAS Fans Only</h2>
 <input placeholder="Name">
 <input placeholder="Password" type="password">
 <button onclick="enter()">Enter</button>
